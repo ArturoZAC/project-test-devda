@@ -7,4 +7,7 @@ export const queryKeys = {
   comments: {
     all: ["comments"] as const,
   },
+  posts: {
+    all: ["posts"] as const,
+  },
 } as const;

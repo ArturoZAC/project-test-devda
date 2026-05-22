@@ -27,6 +27,16 @@ export const AppLayout = () => {
             >
               Comments
             </NavLink>
+            <NavLink
+              to="/posts"
+              className={({ isActive }) =>
+                `text-sm font-semibold px-4 py-2 rounded-xl transition ${
+                  isActive ? "bg-white text-red-500" : "text-white hover:bg-red-400"
+                }`
+              }
+            >
+              Posts
+            </NavLink>
           </div>
         </div>
       </nav>
