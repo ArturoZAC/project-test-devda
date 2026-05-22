@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Pokemon } from "../../../shared/interfaces/pokemon.interface";
 
 const TYPE_COLORS: Record<string, string> = {
@@ -30,7 +31,10 @@ export const PokemonCard = ({ pokemon }: Props) => {
     pokemon.sprites.other["official-artwork"].front_default || pokemon.sprites.front_default;
 
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 p-4 flex flex-col items-center gap-3 cursor-pointer group">
+    <Link
+      to={`/pokemon/${pokemon.name}`}
+      className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 p-4 flex flex-col items-center gap-3 group"
+    >
       <div className="bg-gray-100 rounded-xl w-full flex justify-center p-4 group-hover:scale-105 transition-transform duration-300">
         <img src={image} alt={pokemon.name} className="w-28 h-28 object-contain" />
       </div>
@@ -48,6 +52,6 @@ export const PokemonCard = ({ pokemon }: Props) => {
           </span>
         ))}
       </div>
-    </div>
+    </Link>
   );
 };
