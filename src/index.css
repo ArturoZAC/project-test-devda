@@ -129,6 +129,10 @@
     @apply font-sans;
   }
 
+  button {
+    cursor: pointer;
+  }
+
   /* SISTEMA TIPOGRÁFICO - MOBILE (default) */
   h1 {
     font-size: 30px;
