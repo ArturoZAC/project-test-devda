@@ -1,15 +1,26 @@
+import { useState } from "react";
 import { CommentCard } from "./components/CommentCard";
 import { CommentForm } from "./components/CommentForm";
 import { useComments } from "./hooks/useComments";
 import { IconMessage, IconUsers, IconExclamationCircle } from "@tabler/icons-react";
 
 export const CommentsPage = () => {
-  const { query, mutation } = useComments();
+  // const { query, mutation, deleteMutation } = useComments();
+  // const { data: comments = [], isLoading, isError } = query;
+
+  const { query, mutation, deleteMutation } = useComments();
   const { data: comments = [], isLoading, isError } = query;
+  const [page, setPage] = useState(1);
+  const COMMENTS_PER_PAGE = 6;
+  const paginatedComments = comments.slice(
+    (page - 1) * COMMENTS_PER_PAGE,
+    page * COMMENTS_PER_PAGE,
+  );
+  const totalPages = Math.ceil(comments.length / COMMENTS_PER_PAGE);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col gap-8">
-      {/* Encabezado decorativo */}
+      {/* Encabezado */}
       <div className="flex items-center gap-3">
         <div className="p-2 bg-indigo-100 rounded-xl shadow-sm">
           <IconMessage size={24} className="text-indigo-600" />
@@ -21,12 +32,12 @@ export const CommentsPage = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Formulario - ocupa 5 columnas en desktop */}
+        {/* Formulario */}
         <div className="lg:col-span-5 order-1 lg:order-1">
           <CommentForm mutation={mutation} />
         </div>
 
-        {/* Lista de comentarios - ocupa 7 columnas en desktop */}
+        {/* Lista */}
         <div className="lg:col-span-7 order-2 lg:order-2 flex flex-col gap-6">
           {/* Barra de estado */}
           <div className="flex items-center justify-between bg-white rounded-xl border border-gray-200/80 p-3 shadow-sm">
@@ -43,7 +54,7 @@ export const CommentsPage = () => {
             )}
           </div>
 
-          {/* Estados de carga */}
+          {/* Loading */}
           {isLoading && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -86,13 +97,54 @@ export const CommentsPage = () => {
             </div>
           )}
 
-          {/* Grid de comentarios */}
-          {!isLoading && !isError && comments.length > 0 && (
+          {/* Grid */}
+          {/* {!isLoading && !isError && comments.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {comments.map((comment) => (
-                <CommentCard key={comment.id} comment={comment} />
+                <CommentCard
+                  key={comment.id}
+                  comment={comment}
+                  onDelete={(id) => deleteMutation.mutate(id)}
+                  isDeleting={deleteMutation.isPending}
+                />
               ))}
             </div>
+          )} */}
+
+          {!isLoading && !isError && comments.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {paginatedComments.map((comment) => (
+                  <CommentCard
+                    key={comment.id}
+                    comment={comment}
+                    onDelete={(id) => deleteMutation.mutate(id)}
+                    isDeleting={deleteMutation.isPending}
+                  />
+                ))}
+              </div>
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-4">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="px-5 py-2 rounded-xl bg-white border border-gray-200 shadow-sm font-semibold text-gray-700 disabled:opacity-40 hover:bg-gray-100 transition"
+                  >
+                    ← Anterior
+                  </button>
+                  <span className="font-mono text-gray-500">
+                    Página {page} de {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                    className="px-5 py-2 rounded-xl bg-indigo-500 text-white font-semibold shadow-sm hover:bg-indigo-600 transition disabled:opacity-40"
+                  >
+                    Siguiente →
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
