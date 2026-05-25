@@ -1,17 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PokemonGrid } from "./components/PokemonGrid";
 import { SearchBar } from "./components/SearchBar";
 import { usePokemon } from "./hooks/usePokemon";
 
 export const HomePage = () => {
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
 
-  const { data: pokemons = [], isLoading } = usePokemon(page, search);
+  // const { data: pokemons = [], isLoading } = usePokemon(page, search);
+
+  // const handleSearch = (value: string) => {
+  //   setSearch(value);
+  //   setPage(1);
+  // };
+
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const { data: pokemons = [], isLoading } = usePokemon(page, debouncedSearch);
 
   const handleSearch = (value: string) => {
     setSearch(value);
-    setPage(1);
   };
 
   return (
